@@ -6,6 +6,7 @@ import { NotFound } from "@/pages/not-found";
 import { RouteProvider } from "@/providers/router-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import "@/styles/globals.css";
+import LoadingPage from "./pages/LoadingPage";
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
@@ -13,7 +14,8 @@ createRoot(document.getElementById("root")!).render(
             <BrowserRouter>
                 <RouteProvider>
                     <Routes>
-                        <Route path="/" element={<HomeScreen />} />
+                        <Route path="/" element={<LoadingPage />} />
+                        <Route path="/home" element={<HomeScreen />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </RouteProvider>
