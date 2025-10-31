@@ -1,3 +1,4 @@
+import { localStorageKeys } from "@/consts/localStorageKeys";
 import { TaskItem } from "@/types/task/task.type";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -42,7 +43,7 @@ export const useTaskStore = create<TaskState>()(
 
             clearTasks: () => set({ tasks: [] }),
         }),
-        { name: "app-task-storage" }
+        { name: localStorageKeys.taskStorage }
     )
 );
 

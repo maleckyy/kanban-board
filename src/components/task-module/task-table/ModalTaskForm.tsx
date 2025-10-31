@@ -39,7 +39,7 @@ export default function ModalTaskForm({ taskData }: PropsType) {
     return (
         <div className='flex flex-col gap-3'>
             <Input isRequired placeholder="Task title" value={title} onChange={setTitle} aria-label='task title' />
-            <TextArea ref={textareaRef} placeholder="This is a placeholder." rows={5} aria-label='task description' value={taskData?.description ?? ''} />
+            <TextArea ref={textareaRef} placeholder="This is a placeholder." rows={5} aria-label='task description' defaultValue={taskData?.description ?? ''} />
             <ModalFooterButtons successFn={submitTask} successBtnDisabled={title.trim() === ''} successBtnText={taskData ? "Save" : "Add"} />
         </div>
     )
