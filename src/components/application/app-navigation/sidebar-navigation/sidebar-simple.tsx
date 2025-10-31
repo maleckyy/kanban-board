@@ -8,6 +8,7 @@ import { NavAccountCard } from "../base-components/nav-account-card";
 import { NavItemBase } from "../base-components/nav-item";
 import { NavList } from "../base-components/nav-list";
 import type { NavItemType } from "../config";
+import { useLocation } from "react-router";
 
 interface SidebarNavigationProps {
     /** URL of the currently active item. */
@@ -36,6 +37,7 @@ export const SidebarNavigationSimple = ({
     className,
 }: SidebarNavigationProps) => {
     const MAIN_SIDEBAR_WIDTH = 296;
+    const location = useLocation();
 
     const content = (
         <aside
@@ -52,10 +54,9 @@ export const SidebarNavigationSimple = ({
         >
             <div className="flex flex-col gap-5 px-4 lg:px-5">
                 <UntitledLogo className="h-8" />
-                <Input shortcut size="sm" aria-label="Search" placeholder="Search" icon={SearchLg} />
             </div>
 
-            <NavList activeUrl={activeUrl} items={items} />
+            <NavList activeUrl={activeUrl} items={items} key={location.pathname} />
 
             <div className="mt-auto flex flex-col gap-4 px-2 py-4 lg:px-4 lg:py-6">
                 {footerItems.length > 0 && (
