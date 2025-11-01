@@ -8,6 +8,7 @@ export type TaskState = {
 
     addTask: (title: string, description?: string) => void;
     removeTask: (id: string) => void;
+    removeCompleted: () => void;
     toggleTask: (id: string) => void;
     updateTask: (task: TaskItem) => void;
     clearTasks: () => void;
@@ -30,6 +31,8 @@ export const useTaskStore = create<TaskState>()(
             },
 
             removeTask: id => set(state => ({ tasks: state.tasks.filter(t => t.id !== id) })),
+
+            removeCompleted: () => set(state => ({ tasks: state.tasks.filter(t => t.isDone !== true) })),
 
             toggleTask: id =>
                 set(state => ({

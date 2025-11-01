@@ -13,8 +13,9 @@ import { TaskItem } from "@/types/task/task.type";
 export const TaskTable = () => {
     const { openModal } = useGlobalModal();
     const tasks = useTaskStore(state => state.tasks)
-    const deleteTaskFn = useTaskStore(state => state.removeTask)
-    const toggleTaskFn = useTaskStore(state => state.toggleTask)
+    const deleteTask = useTaskStore(state => state.removeTask)
+    const toggleTaskStatus = useTaskStore(state => state.toggleTask)
+    const removeCompleted = useTaskStore(state => state.removeCompleted)
     const finishedTasks: number = tasks.filter(task => task.isDone === true).length
 
     function openAddTaskDialog() {
@@ -26,10 +27,6 @@ export const TaskTable = () => {
         })
     }
 
-    const deleteTask = useCallback((id: string) => {
-        deleteTaskFn(id)
-    }, [deleteTaskFn])
-
     const editTask = useCallback((task: TaskItem) => {
         openModal({
             title: "Edit task",
@@ -38,10 +35,6 @@ export const TaskTable = () => {
             content: <ModalTaskForm taskData={task} />
         })
     }, [openModal])
-
-    const toggleTaskStatus = useCallback((id: string) => {
-        toggleTaskFn(id)
-    }, [toggleTaskFn])
 
     return (
         <TableCard.Root>
@@ -61,7 +54,9 @@ export const TaskTable = () => {
                     <Table.Head id="status" label="Status" className="w-16" />
                     <Table.Head id="name" label="Task name" isRowHeader />
                     <Table.Head id="desc" label="Description" />
-                    <Table.Head id="actions" />
+                    <Table.Head id="actions" className='w-16'>
+                        <Button size="sm" color="secondary-destructive" onClick={removeCompleted} isDisabled={finishedTasks === 0}>Delete selected</Button>
+                    </Table.Head>
                 </Table.Header>
                 <Table.Body items={tasks}>
                     {(item) => (
