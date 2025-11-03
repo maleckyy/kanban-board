@@ -2,27 +2,27 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Loader = () => {
-    return (
-        <StyledWrapper>
-            <div className="card">
-                <div className="loader">
-                    <p>take care of</p>
-                    <div className="words">
-                        <span className="word"> time</span>
-                        <span className="word"> tasks</span>
-                        <span className="word"> projects</span>
-                        <span className="word"> process</span>
-                        <span className="word"> yourself</span>
-                    </div>
-                </div>
-            </div>
-        </StyledWrapper>
-    );
+  return (
+    <StyledWrapper>
+      <div className="card">
+        <div className="loader">
+          <p>take care of</p>
+          <div className="words">
+            <span className="word"> time</span>
+            <span className="word"> tasks</span>
+            <span className="word"> projects</span>
+            <span className="word"> process</span>
+            <span className="word"> yourself</span>
+          </div>
+        </div>
+      </div>
+    </StyledWrapper>
+  );
 }
 
 const StyledWrapper = styled.div`
   .card {
-    --bg-color: #111;
+    --bg-color: var(--background-color-primary);
     padding: 1rem 2rem;
     border-radius: 1.25rem;
   }
