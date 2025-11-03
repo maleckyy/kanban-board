@@ -1,0 +1,1 @@
+export const defaultColumnsNames = ["To do", "In progres", "Done"]
