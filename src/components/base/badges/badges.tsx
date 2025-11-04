@@ -190,10 +190,11 @@ interface BadgeWithIconProps<T extends BadgeTypes> {
     iconTrailing?: IconComponentType;
     children: ReactNode;
     className?: string;
+    onClick?: () => void
 }
 
 export const BadgeWithIcon = <T extends BadgeTypes>(props: BadgeWithIconProps<T>) => {
-    const { size = "md", color = "gray", type = "pill-color", iconLeading: IconLeading, iconTrailing: IconTrailing, children, className } = props;
+    const { size = "md", color = "gray", type = "pill-color", iconLeading: IconLeading, iconTrailing: IconTrailing, children, className, onClick } = props;
 
     const colors = withBadgeTypes[type];
 
@@ -235,7 +236,7 @@ export const BadgeWithIcon = <T extends BadgeTypes>(props: BadgeWithIconProps<T>
     };
 
     return (
-        <span className={cx(colors.common, sizes[type][size][icon], colors.styles[color].root, className)}>
+        <span className={cx(colors.common, sizes[type][size][icon], colors.styles[color].root, className)} onClick={onClick}>
             {IconLeading && <IconLeading className={cx(colors.styles[color].addon, "size-3 stroke-3")} />}
             {children}
             {IconTrailing && <IconTrailing className={cx(colors.styles[color].addon, "size-3 stroke-3")} />}

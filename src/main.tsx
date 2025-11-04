@@ -10,6 +10,8 @@ import HomePage from "./pages/HomePage";
 import AppLayout from "./components/shared/layout/AppLayout";
 import BoardPage from "./pages/BoardPage";
 import TaskPage from "./pages/TaskPage";
+import BoardContent from "./components/board/BoardContent";
+import AddNewBoardPage from "./components/board/add-new-board/AddNewBoardPage";
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
@@ -18,11 +20,17 @@ createRoot(document.getElementById("root")!).render(
                 <RouteProvider>
                     <Routes>
                         <Route path="/" element={<LoadingPage />} />
-                        <Route path="/app" element={<AppLayout />} >
+                        <Route path="/app" element={<AppLayout />}>
                             <Route index element={<HomePage />} />
-                            <Route path="/app/board" element={<BoardPage />} />
-                            <Route path="/app/task" element={<TaskPage />} />
+
+                            <Route path="board" element={<BoardPage />}>
+                                <Route index element={<AddNewBoardPage />} />
+                                <Route path=":boardId" element={<BoardContent />} />
+                            </Route>
+
+                            <Route path="task" element={<TaskPage />} />
                         </Route>
+
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </RouteProvider>

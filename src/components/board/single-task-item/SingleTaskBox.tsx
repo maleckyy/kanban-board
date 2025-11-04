@@ -5,12 +5,13 @@ import { getTaskPriorityName } from '../utils/getTaskPriorityName'
 import { getTaskPriorityColor } from '../utils/getTaskPriorityColor'
 import { truncateText } from '@/utils/text-values/truncateText'
 type PropsType = {
-    task: Task
+    task: Task,
+    openDialog: () => void
 }
 
-export default function SingleTaskBox({ task }: PropsType) {
+export default function SingleTaskBox({ task, openDialog }: PropsType) {
     return (
-        <div className='text-primary pb-1 flex flex-col gap-2'>
+        <div className='text-primary pb-1 flex flex-col gap-2' onClick={openDialog}>
             <h5 className='text-[15px]'>{truncateText(task.title, 40)}</h5>
             <div className=' flex flex-col gap-1 text-[13px]'>
                 {/* col name + color in future */}

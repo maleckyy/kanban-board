@@ -22,6 +22,7 @@ export type ModalData = {
     dataTestId?: string;
     hideTitle?: boolean;
     modalWidth?: number;
+    hideCloseButton?: boolean
 };
 
 type ModalContextType = {
@@ -74,6 +75,7 @@ export const GlobalModalProvider = ({ children }: { children: ReactNode }) => {
                 isOpen={open}
                 onOpenChange={onModalStatusChange}
                 data-testid={modalData.dataTestId}
+                isDismissable
                 className={(state) =>
                     cx(
                         'fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity',
@@ -83,16 +85,16 @@ export const GlobalModalProvider = ({ children }: { children: ReactNode }) => {
                 }
             >
                 <AriaModal
-                    style={modalData.modalWidth ? { width: `${modalData.modalWidth}px`, minWidth: `${modalData.modalWidth}px` } : {}}
+                    style={modalData.modalWidth ? { width: `${modalData.modalWidth}px`, maxWidth: `100vw` } : {}}
                     className={(state) =>
                         cx(
-                            ' bg-primary rounded-2xl shadow-xl transition-transform p-6 min-w-[400px]',
+                            ' bg-primary rounded-2xl shadow-xl transition-transform p-6 md:min-w-[400px] max-w-[90vw] mx-4',
                             state.isEntering && 'animate-in zoom-in-95',
                             state.isExiting && 'animate-out zoom-out-95'
                         )
                     }>
                     <AriaDialog className="outline-hidden relative text-primary" aria-label={modalData.title || "Dialog window"}>
-                        <button className='absolute -top-3 -right-3 cursor-pointer' onClick={closeModal}><X size={18}></X></button>
+                        {!modalData.hideCloseButton && <button className='absolute -top-3 -right-3 cursor-pointer' onClick={closeModal}><X size={18}></X></button>}
                         {modalData.title && !modalData.hideTitle && (
                             <h2 className="text-lg font-semibold mb-2">{modalData.title}</h2>
                         )}
@@ -103,6 +105,6 @@ export const GlobalModalProvider = ({ children }: { children: ReactNode }) => {
                     </AriaDialog>
                 </AriaModal>
             </AriaModalOverlay>
-        </ModalContext.Provider>
+        </ModalContext.Provider >
     );
 };
