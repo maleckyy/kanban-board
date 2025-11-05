@@ -1,3 +1,4 @@
+import BoardActionsDropdown from '@/components/board/board-page-header/BoardActionsDropdown'
 import BoardViewSwitch from '@/components/board/board-page-header/BoardViewSwitch'
 import AppPageHeader from '@/components/shared/layout/AppPageHeader'
 import React, { useMemo } from 'react'
@@ -12,7 +13,12 @@ export default function BoardPage() {
 
     return (
         <>
-            <AppPageHeader headerTitle={isBoard ? "Board" : " Add new board"} actionComponent={isBoard && <BoardViewSwitch />} />
+            <AppPageHeader headerTitle={isBoard ? "Board" : " Add new board"} actionComponent={isBoard && (
+                <>
+                    <BoardViewSwitch />
+                    <BoardActionsDropdown />
+                </>
+            )} />
             <Outlet />
         </>
     )

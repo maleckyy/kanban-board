@@ -171,7 +171,7 @@ export default function BoardContent() {
                     </Droppable>
                 ))}
             </DragDropContext>
-            <AddNewStatusButton />
+            <AddNewStatusButton boardId={boardId as string} />
         </div>
     );
 }
