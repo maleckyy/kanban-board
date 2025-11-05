@@ -1,10 +1,10 @@
 import React from 'react'
+import NewBoardForm from './NewBoardForm'
 
 export default function AddNewBoardPage() {
     return (
         <div>
-            add board form
+            <NewBoardForm />
         </div>
     )
 }
-//add board form /w custom status names,
