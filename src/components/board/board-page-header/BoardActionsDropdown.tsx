@@ -4,14 +4,28 @@ import { Button } from "@/components/base/buttons/button";
 import { Dropdown } from "@/components/base/dropdown/dropdown";
 import useBoardStore from '@/stores/board-store/boardStore';
 import { useNavigate } from 'react-router';
+import { useGlobalModal } from '@/components/application/modals/AppModal';
+import ChangeColumPositions from '../change-column-positions/ChangeColumPositions';
 
 export default function BoardActionsDropdown({ boardId }: { boardId: string }) {
     const { deleteBoard } = useBoardStore()
     const navigate = useNavigate()
+    const { openModal, closeModal } = useGlobalModal()
 
     function deleteCurrentBoard() {
         deleteBoard(boardId)
         navigate("/app", { replace: true })
+    }
+
+    function openStatusModal() {
+        openModal(
+            {
+                title: "Change columns position",
+                content: <ChangeColumPositions boardId={boardId} closeDialog={closeModal} />,
+                modalWidth: 600,
+                dataTestId: "change-columns-position-modal"
+            }
+        )
     }
 
     return (
@@ -29,7 +43,7 @@ export default function BoardActionsDropdown({ boardId }: { boardId: string }) {
                                 Edit board
                             </span>
                         </Dropdown.Item>
-                        <Dropdown.Item>
+                        <Dropdown.Item onClick={openStatusModal}>
                             <span className='text-[12px] flex items-center gap-2'>
                                 < Dotpoints02 size={14} />
                                 Edit Columns
