@@ -1,7 +1,7 @@
 import BorderlessInput from '@/styled-components/inputs/BorderlessInput'
 import { Task } from '@/types/board/board.type'
 import React, { useEffect } from 'react'
-import { DotsHorizontal, Copy01, Flag01, CalendarPlus01, Trash01 } from '@untitledui/icons'
+import { DotsHorizontal, Copy01, Flag01, CalendarPlus01, Trash01, CalendarCheck02 } from '@untitledui/icons'
 import { TextArea } from 'react-aria-components'
 import { BadgeWithIcon } from '@/components/base/badges/badges'
 import { getTaskPriorityColor } from '../utils/getTaskPriorityColor'
@@ -14,6 +14,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { updateTaskSchema } from '@/schemas/board/task/task.schema'
 import { Controller, useForm } from 'react-hook-form'
 import { taskPriorityOptions } from '../utils/taskPriorityOptions'
+import { DatePicker } from '@/components/application/date-picker/date-picker'
+import { parseDate } from "@internationalized/date";
 
 type PropsType = {
     task: Task
@@ -39,14 +41,15 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
             reset({
                 title: task.title,
                 description: task.description ?? '',
-                priority: task.priority.toString()
+                priority: task.priority.toString(),
+                endDate: task.dueDate
             })
         }
     }, [task, reset])
 
     function checkChanges(value: UpdateTaskSchemaType) {
         if (!task) return false
-        if (value.title === task.title && value.description === task.description && value.priority === task.priority.toString()) {
+        if (value.title === task.title && value.description === task.description && value.priority === task.priority.toString() && value.endDate === task.dueDate) {
             return false
         }
         return true
@@ -60,11 +63,11 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                 ...task,
                 title: updatedValues.title.trim() === '' ? 'Task title' : updatedValues.title,
                 description: updatedValues.description ?? '',
-                priority: Number(updatedValues.priority)
+                priority: Number(updatedValues.priority),
+                dueDate: updatedValues.endDate
             }
             updateTaskFn(updatedTaskData)
         }
-
         removeSearchParam("task");
     })
 
@@ -88,7 +91,7 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                     )}
                 />
                 <Dropdown.Root>
-                    <Button className="" color="secondary" iconTrailing={DotsHorizontal}></Button>
+                    <Button color="secondary" iconTrailing={DotsHorizontal}></Button>
                     <Dropdown.Popover>
                         <Dropdown.Menu>
                             <Dropdown.Item icon={Trash01} onClick={deleteTaskFn}>
@@ -105,23 +108,53 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                         Task ID: {task.id}
                     </span>
                 </BadgeWithIcon>
-                <div className='grid gap-2 grid-cols-2'>
-                    <div className='flex items-center gap-2 text-[14px]'>
-                        <CalendarPlus01 size={15} /> Created at: {new Date(task.createdAt).toLocaleDateString()}
+                <div className='grid gap-1 grid-cols-2 grid-rows-2 items-start auto-rows-fr'>
+                    <div className='flex items-center gap-2 text-[14px] h-full'>
+                        <CalendarPlus01 size={15} className='mb-0.5' /> Created at: {new Date(task.createdAt).toLocaleDateString()}
                     </div>
-                    <div className='flex items-center gap-2 text-[14px]'>
-                        <Flag01 size={15} fill={getTaskPriorityColor(Number(priorityValue))} />
+
+                    <div className='flex items-center gap-2 text-[14px] h-full'>
+                        <Flag01 size={15} fill={getTaskPriorityColor(Number(priorityValue))} className='mb-0.5' />
                         Priority:
                         <Controller
                             name='priority'
                             control={control}
                             render={({ field }) => (
-                                <select id="priority" name="priority" onChange={field.onChange} value={field.value} className='p-1 bg-primary'>
+                                <select id="priority" name="priority" onChange={field.onChange} value={field.value} className='py-2 px-3 bg-primary border-secondary! rounded-lg'>
                                     {taskPriorityOptions.map(option => {
                                         return <option key={option.value} value={option.value} className="text-sm text-foreground bg-background">{option.label}</option>
                                     })}
                                 </select>
                             )}
+                        />
+                    </div>
+                    <div className='flex items-center gap-2 text-[14px]  h-full'>
+                        <CalendarCheck02 size={14} className='mb-0.5' />
+                        Due date:
+                        <Controller
+                            name="endDate"
+                            control={control}
+                            render={({ field }) => {
+                                const valueAsDateValue = field.value
+                                    ? parseDate(field.value)
+                                    : null;
+
+                                return (
+                                    <DatePicker
+                                        hideIcon
+                                        buttonClassName='py-1 px-2'
+                                        value={valueAsDateValue}
+                                        aria-label='Task due date'
+                                        onChange={(dateValue) => {
+                                            if (!dateValue) {
+                                                field.onChange("");
+                                                return;
+                                            }
+                                            field.onChange(dateValue.toString());
+                                        }}
+                                    />
+                                );
+                            }}
                         />
                     </div>
                 </div>

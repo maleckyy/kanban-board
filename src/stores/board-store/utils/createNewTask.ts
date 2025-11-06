@@ -10,6 +10,7 @@ export function createTask(
         title,
         description: '',
         createdAt: new Date().toISOString(),
+        dueDate: null,
         columnId,
         position,
         priority: TaskPriority.LOW
