@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { SearchLg } from "@untitledui/icons";
 import { Input } from "@/components/base/input/input";
-import { UntitledLogo } from "@/components/foundations/logo/untitledui-logo";
 import { cx } from "@/utils/cx";
 import { MobileNavigationHeader } from "../base-components/mobile-header";
 import { NavAccountCard } from "../base-components/nav-account-card";
@@ -9,6 +8,7 @@ import { NavItemBase } from "../base-components/nav-item";
 import { NavList } from "../base-components/nav-list";
 import type { NavItemType } from "../config";
 import { useLocation } from "react-router";
+import AppLogo from "@/components/shared/AppLogo";
 
 interface SidebarNavigationProps {
     /** URL of the currently active item. */
@@ -52,8 +52,8 @@ export const SidebarNavigationSimple = ({
                 className,
             )}
         >
-            <div className="flex flex-col gap-5 px-4 lg:px-5">
-                <UntitledLogo className="h-8" />
+            <div className="flex flex-row gap-5 px-4 lg:px-5 justify-center">
+                <AppLogo />
             </div>
 
             <NavList activeUrl={activeUrl} items={items} key={location.pathname} />
