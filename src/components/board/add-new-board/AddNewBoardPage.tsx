@@ -3,7 +3,7 @@ import NewBoardForm from './NewBoardForm'
 
 export default function AddNewBoardPage() {
     return (
-        <div>
+        <div className='flex-1'>
             <NewBoardForm />
         </div>
     )

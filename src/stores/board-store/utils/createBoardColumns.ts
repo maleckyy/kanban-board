@@ -1,9 +1,9 @@
 import { defaultColumnsNames } from "@/consts/board/defaultColumnsName"
 import { BoardColumn } from "@/types/board/board.type"
 
-export function createInitialColumns(boardId: string): BoardColumn[] {
+export function createBoardColumns(boardId: string, customColumnsNames: string[] = defaultColumnsNames): BoardColumn[] {
 
-    const columns: BoardColumn[] = defaultColumnsNames.map((name, idx) => {
+    const columns: BoardColumn[] = customColumnsNames.map((name, idx) => {
         const col: BoardColumn = {
             id: crypto.randomUUID(),
             name: name,
