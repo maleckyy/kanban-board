@@ -22,6 +22,7 @@ export type Task = {
     title: string
     description: string
     createdAt: string
+    dueDate: string | null | undefined
     columnId: string
     position: number
     priority: TaskPriority
