@@ -33,7 +33,7 @@ interface NavItemBaseProps {
 }
 
 export const NavItemBase = ({ current, type, badge, href, icon: Icon, children, truncate = true, onClick }: NavItemBaseProps) => {
-    const iconElement = Icon && <Icon aria-hidden="true" className="mr-2 size-5 shrink-0 text-fg-quaternary transition-inherit-all" />;
+    const iconElement = Icon && <Icon aria-hidden="true" className="mr-2 size-4 shrink-0 text-fg-quaternary transition-inherit-all -mb-0.5" />;
 
     const badgeElement =
         badge && (typeof badge === "string" || typeof badge === "number") ? (
@@ -47,7 +47,7 @@ export const NavItemBase = ({ current, type, badge, href, icon: Icon, children, 
     const labelElement = (
         <span
             className={cx(
-                "flex-1 text-md font-semibold text-secondary transition-inherit-all group-hover:text-secondary_hover",
+                "flex-1 text-md font-base text-secondary transition-inherit-all group-hover:text-secondary_hover text-[14px]",
                 truncate && "truncate",
                 current && "text-secondary_hover",
             )}
@@ -79,7 +79,7 @@ export const NavItemBase = ({ current, type, badge, href, icon: Icon, children, 
                 href={href!}
                 target={isExternal ? "_blank" : "_self"}
                 rel="noopener noreferrer"
-                className={cx("py-2 pr-3 pl-10", styles.root, current && styles.rootSelected)}
+                className={cx("py-1.5 pr-3 pl-10", styles.root, current && styles.rootSelected)}
                 onClick={onClick}
                 aria-current={current ? "page" : undefined}
             >
