@@ -1,5 +1,5 @@
 import BorderlessInput from '@/styled-components/inputs/BorderlessInput'
-import { Task } from '@/types/board/board.type'
+import { BoardColumnSelectType, Task } from '@/types/board/board.type'
 import React, { useEffect, useRef } from 'react'
 import { DotsHorizontal, Copy01, Flag01, CalendarPlus01, Trash01, CalendarCheck02 } from '@untitledui/icons'
 import { TextArea } from 'react-aria-components'
@@ -20,10 +20,11 @@ import { parseDate } from "@internationalized/date";
 type PropsType = {
     task: Task
     deleteTaskFn: () => void
-    updateTaskFn: (task: Task) => void
+    updateTaskFn: (colId: string, task: Task) => void
+    boardColumnsData: BoardColumnSelectType[]
 }
 
-export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: PropsType) {
+export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn, boardColumnsData }: PropsType) {
     const titleInputRef = useRef<HTMLInputElement | null>(null)
     type UpdateTaskSchemaType = z.infer<typeof updateTaskSchema>;
     const {
@@ -43,7 +44,8 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                 title: task.title,
                 description: task.description ?? '',
                 priority: task.priority.toString(),
-                endDate: task.dueDate
+                endDate: task.dueDate,
+                columnId: task.columnId
             })
         }
     }, [task, reset])
@@ -61,7 +63,7 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
 
     function checkChanges(value: UpdateTaskSchemaType) {
         if (!task) return false
-        if (value.title === task.title && value.description === task.description && value.priority === task.priority.toString() && value.endDate === task.dueDate) {
+        if (value.title === task.title && value.description === task.description && value.priority === task.priority.toString() && value.endDate === task.dueDate && value.columnId === task.columnId) {
             return false
         }
         return true
@@ -76,9 +78,10 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                 title: updatedValues.title.trim() === '' ? 'Task title' : updatedValues.title,
                 description: updatedValues.description ?? '',
                 priority: Number(updatedValues.priority),
-                dueDate: updatedValues.endDate
+                dueDate: updatedValues.endDate,
+                columnId: updatedValues.columnId
             }
-            updateTaskFn(updatedTaskData)
+            updateTaskFn(updatedTaskData.columnId, updatedTaskData)
         }
         removeSearchParam("task");
     })
@@ -167,6 +170,20 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                                     />
                                 );
                             }}
+                        />
+                    </div>
+                    <div>
+
+                        <Controller
+                            name='columnId'
+                            control={control}
+                            render={({ field }) => (
+                                <select id="columnId" name="columnId" className='py-2 px-3 bg-primary border-secondary! rounded-lg' onChange={field.onChange} value={field.value}>
+                                    {boardColumnsData.map(option => {
+                                        return <option key={option.id} value={option.id} className="text-sm text-foreground bg-background">{option.name}</option>
+                                    })}
+                                </select>
+                            )}
                         />
                     </div>
                 </div>

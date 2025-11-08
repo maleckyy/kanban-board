@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
     DragDropContext,
     Droppable,
@@ -8,7 +8,7 @@ import {
 
 import { useLocation } from "react-router";
 import useBoardStore from "@/stores/board-store/boardStore";
-import { Task } from "@/types/board/board.type";
+import { BoardColumnSelectType, Task } from "@/types/board/board.type";
 import { cx } from "@/utils/cx";
 import { reorderList } from "./utils/reorderList";
 import SingleTaskBox from "./single-task-item/SingleTaskBox";
@@ -33,20 +33,30 @@ export default function BoardContent() {
 
     const { openModal, closeModal } = useGlobalModal();
 
+    const columnsSelectData: BoardColumnSelectType[] = useMemo(() => {
+        if (!board) return []
+        return board?.columns.map(col => {
+            return {
+                id: col.id,
+                name: col.name
+            }
+        })
+    }, [board?.columns])
+
     function deleteTaskFn(colId: string, taskId: string) {
         if (!boardId) return;
         deleteTask(boardId, colId, taskId);
         closeModal();
     }
 
-    function updateTaskData(colId: string, task: Task) {
-        if (boardId) updateTask(boardId, colId, task)
-    }
+    const updateTaskData = useCallback((colId: string, task: Task) => {
+        if (boardId) updateTask(boardId, colId, task);
+    }, [boardId]);
 
-    function openTaskDialog(colId: string, task?: Task) {
+    function openTaskDialog(columnId: string, task?: Task) {
         if (!board || !boardId) return;
 
-        const newTask: Task | null = task ?? createNewTask(boardId, colId);
+        const newTask: Task | null = task ?? createNewTask(boardId, columnId);
         const id = task?.id ?? newTask?.id;
 
         if (id) setSearchParam("task", String(id));
@@ -54,7 +64,7 @@ export default function BoardContent() {
         const taskForModal = task ?? newTask;
         if (taskForModal) {
             openModal({
-                content: <TaskModalForm task={taskForModal} deleteTaskFn={() => deleteTaskFn(colId, taskForModal.id)} updateTaskFn={(task: Task) => updateTaskData(colId, task)} />,
+                content: <TaskModalForm task={taskForModal} deleteTaskFn={() => deleteTaskFn(columnId, taskForModal.id)} updateTaskFn={(colId: string, task: Task) => updateTaskData(colId, task)} boardColumnsData={columnsSelectData} />,
                 modalWidth: 800,
                 dataTestId: "board-task-modal",
                 hideCloseButton: true
@@ -109,7 +119,7 @@ export default function BoardContent() {
             const existingTask = col.tasks.find(task => task.id === taskIdInParams);
             if (existingTask) {
                 openModal({
-                    content: <TaskModalForm task={existingTask} deleteTaskFn={() => deleteTaskFn(col.id, existingTask.id)} updateTaskFn={(task: Task) => updateTaskData(col.id, task)} />,
+                    content: <TaskModalForm task={existingTask} deleteTaskFn={() => deleteTaskFn(col.id, existingTask.id)} updateTaskFn={(colId: string, task: Task) => updateTaskData(colId, task)} boardColumnsData={columnsSelectData} />,
                     modalWidth: 800,
                     dataTestId: "board-task-modal",
                     hideCloseButton: true
