@@ -1,6 +1,6 @@
 import BorderlessInput from '@/styled-components/inputs/BorderlessInput'
 import { Task } from '@/types/board/board.type'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { DotsHorizontal, Copy01, Flag01, CalendarPlus01, Trash01, CalendarCheck02 } from '@untitledui/icons'
 import { TextArea } from 'react-aria-components'
 import { BadgeWithIcon } from '@/components/base/badges/badges'
@@ -24,6 +24,7 @@ type PropsType = {
 }
 
 export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: PropsType) {
+    const titleInputRef = useRef<HTMLInputElement | null>(null)
     type UpdateTaskSchemaType = z.infer<typeof updateTaskSchema>;
     const {
         reset,
@@ -46,6 +47,17 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
             })
         }
     }, [task, reset])
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (task && titleInputRef.current && task.title === "New task") {
+                const input = titleInputRef.current;
+                input.focus();
+                const length = input.value.length;
+                input.setSelectionRange(length, length);
+            }
+        }, 50)
+    }, []);
 
     function checkChanges(value: UpdateTaskSchemaType) {
         if (!task) return false
@@ -87,7 +99,7 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                     name='title'
                     control={control}
                     render={({ field }) => (
-                        <BorderlessInput defaultValue={field.value} onChange={field.onChange} className='flex-1 text-[18px]' />
+                        <BorderlessInput defaultValue={field.value} onChange={field.onChange} className='flex-1 text-[18px]' ref={titleInputRef} />
                     )}
                 />
                 <Dropdown.Root>
@@ -166,7 +178,7 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                 name='description'
                 control={control}
                 render={({ field }) => (
-                    <TextArea rows={10} className={'w-full'} defaultValue={field.value} onChange={field.onChange}></TextArea>
+                    <TextArea rows={10} className={'w-full p-1'} defaultValue={field.value} onChange={field.onChange}></TextArea>
                 )}
             />
         </section>
