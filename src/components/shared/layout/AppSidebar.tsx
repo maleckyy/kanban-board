@@ -81,6 +81,7 @@ export const AppSidebar = () => {
 
     return (
         <SidebarNavigationSimple
+            className="z-10"
             items={navItemsSimple}
             showAccountCard={false}
             activeUrl={`${location.pathname}`}
