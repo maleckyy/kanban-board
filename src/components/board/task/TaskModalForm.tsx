@@ -1,7 +1,7 @@
 import BorderlessInput from '@/styled-components/inputs/BorderlessInput'
-import { Task } from '@/types/board/board.type'
-import React, { useEffect } from 'react'
-import { DotsHorizontal, Copy01, Flag01, CalendarPlus01, Trash01, CalendarCheck02 } from '@untitledui/icons'
+import { BoardColumnSelectType, Task } from '@/types/board/board.type'
+import React, { useEffect, useRef } from 'react'
+import { DotsHorizontal, Copy01, Flag01, CalendarPlus01, Trash01, CalendarCheck02, Asterisk01 } from '@untitledui/icons'
 import { TextArea } from 'react-aria-components'
 import { BadgeWithIcon } from '@/components/base/badges/badges'
 import { getTaskPriorityColor } from '../utils/getTaskPriorityColor'
@@ -20,10 +20,12 @@ import { parseDate } from "@internationalized/date";
 type PropsType = {
     task: Task
     deleteTaskFn: () => void
-    updateTaskFn: (task: Task) => void
+    updateTaskFn: (colId: string, task: Task) => void
+    boardColumnsData: BoardColumnSelectType[]
 }
 
-export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: PropsType) {
+export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn, boardColumnsData }: PropsType) {
+    const titleInputRef = useRef<HTMLInputElement | null>(null)
     type UpdateTaskSchemaType = z.infer<typeof updateTaskSchema>;
     const {
         reset,
@@ -42,14 +44,26 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                 title: task.title,
                 description: task.description ?? '',
                 priority: task.priority.toString(),
-                endDate: task.dueDate
+                endDate: task.dueDate,
+                columnId: task.columnId
             })
         }
     }, [task, reset])
 
+    useEffect(() => {
+        setTimeout(() => {
+            if (task && titleInputRef.current && task.title === "New task") {
+                const input = titleInputRef.current;
+                input.focus();
+                const length = input.value.length;
+                input.setSelectionRange(length, length);
+            }
+        }, 50)
+    }, []);
+
     function checkChanges(value: UpdateTaskSchemaType) {
         if (!task) return false
-        if (value.title === task.title && value.description === task.description && value.priority === task.priority.toString() && value.endDate === task.dueDate) {
+        if (value.title === task.title && value.description === task.description && value.priority === task.priority.toString() && value.endDate === task.dueDate && value.columnId === task.columnId) {
             return false
         }
         return true
@@ -64,9 +78,10 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                 title: updatedValues.title.trim() === '' ? 'Task title' : updatedValues.title,
                 description: updatedValues.description ?? '',
                 priority: Number(updatedValues.priority),
-                dueDate: updatedValues.endDate
+                dueDate: updatedValues.endDate,
+                columnId: updatedValues.columnId
             }
-            updateTaskFn(updatedTaskData)
+            updateTaskFn(updatedTaskData.columnId, updatedTaskData)
         }
         removeSearchParam("task");
     })
@@ -87,7 +102,7 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                     name='title'
                     control={control}
                     render={({ field }) => (
-                        <BorderlessInput defaultValue={field.value} onChange={field.onChange} className='flex-1 text-[18px]' />
+                        <BorderlessInput defaultValue={field.value} onChange={field.onChange} className='flex-1 text-[18px]' ref={titleInputRef} />
                     )}
                 />
                 <Dropdown.Root>
@@ -108,14 +123,19 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                         Task ID: {task.id}
                     </span>
                 </BadgeWithIcon>
-                <div className='grid gap-1 grid-cols-2 grid-rows-2 items-start auto-rows-fr'>
+
+
+                <div className='grid gap-1 md:grid-rows-2  md:grid-cols-2 items-start auto-rows-fr grid-cols-1 grid-rows-1'>
                     <div className='flex items-center gap-2 text-[14px] h-full'>
-                        <CalendarPlus01 size={15} className='mb-0.5' /> Created at: {new Date(task.createdAt).toLocaleDateString()}
+                        <div className='flex items-center gap-2 w-25'>
+                            <CalendarPlus01 size={15} className='mb-0.5' /> Created at: </div>{new Date(task.createdAt).toLocaleDateString()}
                     </div>
 
                     <div className='flex items-center gap-2 text-[14px] h-full'>
-                        <Flag01 size={15} fill={getTaskPriorityColor(Number(priorityValue))} className='mb-0.5' />
-                        Priority:
+                        <div className='flex items-center gap-2 w-25'>
+                            <Flag01 size={15} fill={getTaskPriorityColor(Number(priorityValue))} className='mb-0.5' />
+                            Priority:
+                        </div>
                         <Controller
                             name='priority'
                             control={control}
@@ -128,9 +148,11 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                             )}
                         />
                     </div>
-                    <div className='flex items-center gap-2 text-[14px]  h-full'>
-                        <CalendarCheck02 size={14} className='mb-0.5' />
-                        Due date:
+                    <div className='flex items-center gap-2 text-[14px] h-full'>
+                        <div className='flex items-center gap-2 w-25'>
+                            <CalendarCheck02 size={14} className='mb-0.5' />
+                            Due date:
+                        </div>
                         <Controller
                             name="endDate"
                             control={control}
@@ -157,6 +179,23 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                             }}
                         />
                     </div>
+                    <div className='flex items-center gap-2 text-[14px] h-full'>
+                        <div className='flex items-center gap-2 w-25'>
+                            <Asterisk01 size={15} className='mb-0.5' />
+                            Status:
+                        </div>
+                        <Controller
+                            name='columnId'
+                            control={control}
+                            render={({ field }) => (
+                                <select id="columnId" name="columnId" className='py-2 px-3 bg-primary border-secondary! rounded-lg' onChange={field.onChange} value={field.value}>
+                                    {boardColumnsData.map(option => {
+                                        return <option key={option.id} value={option.id} className="text-sm text-foreground bg-background">{option.name}</option>
+                                    })}
+                                </select>
+                            )}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -166,7 +205,7 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn }: Prop
                 name='description'
                 control={control}
                 render={({ field }) => (
-                    <TextArea rows={10} className={'w-full'} defaultValue={field.value} onChange={field.onChange}></TextArea>
+                    <TextArea rows={10} className={'w-full p-1'} defaultValue={field.value} onChange={field.onChange}></TextArea>
                 )}
             />
         </section>
