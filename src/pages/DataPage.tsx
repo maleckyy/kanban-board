@@ -1,8 +1,14 @@
+import { Button } from '@/components/base/buttons/button';
+import { ProgressBar } from '@/components/base/progress-indicators/progress-indicators';
 import AppPageHeader from '@/components/shared/layout/AppPageHeader'
 import { localStorageKeys } from '@/consts/localStorageKeys';
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { Input } from 'react-aria-components';
 
 export default function DataPage() {
+    const importButtonRef = useRef<HTMLInputElement | null>(null)
+    const MAX_BYTES = 5 * 1024 * 1024;
+    const [usagePercent, setUsagePercent] = useState(0);
 
     // experimental - add merging existing data & current saved on localstorage
     function exportData() {
@@ -44,12 +50,39 @@ export default function DataPage() {
         reader.readAsText(file);
     }
 
+    function getLocalStorageSize() {
+        let total = 0
+        for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) {
+                total += (localStorage[key].length + key.length)
+            }
+        } return total
+    }
+
+    const refreshUsage = () => {
+        const size = getLocalStorageSize();
+        const percent = Math.min((size / MAX_BYTES) * 100, 100);
+        setUsagePercent(percent);
+    };
+
+    useEffect(() => {
+        refreshUsage();
+    }, []);
+
     return (
-        <div>
+        <>
             <AppPageHeader headerTitle='Import / Export your Data' />
-            <button className='text-primary' onClick={exportData}>Exportuj dane</button>
-            <input type="file" accept="application/json" onChange={importData} className='text-primary' />
-        </div>
+            <div className='text-primary w-1/2 flex flex-col gap-2'>
+                <span>Current use of resources</span>
+                <ProgressBar labelPosition="bottom" min={0} max={100} value={usagePercent} />
+            </div>
+            <div className='flex gap-4 items-center'>
+                <Button className='text-primary' onClick={exportData}>Export</Button>
+                <Button className='text-primary' onClick={() => importButtonRef.current?.click()}>Import</Button>
+                <Input ref={importButtonRef} type="file" accept="application/json" onChange={importData} className='text-primary hidden' placeholder='Import data' />
+            </div>
+
+        </>
 
     )
 }
