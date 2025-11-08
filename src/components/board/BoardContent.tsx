@@ -18,6 +18,7 @@ import AddNewStatusButton from "./board-components/AddNewStatusButton";
 import { useGlobalModal } from "../application/modals/AppModal";
 import TaskModalForm from "./task/TaskModalForm";
 import { setSearchParam } from "./utils/setSearchParam";
+import ColumnDropdown from "./column-dropdown/ColumnDropdown";
 
 export default function BoardContent() {
     const location = useLocation();
@@ -26,12 +27,16 @@ export default function BoardContent() {
     const taskIdInParams = useMemo(() => params.get("task"), [params]);
     const boardId = useMemo(() => location.pathname.split("/").pop(), [location]);
 
-    const { boards, updateTask, deleteTask, addNewTask: createNewTask, updateColumns: updateColumn } = useBoardStore(state => state)
+    const { boards, updateTask, deleteTask, addNewTask: createNewTask, updateColumns: updateColumn, deleteTasksFromColumn } = useBoardStore(state => state)
 
     const board = boards.find(b => b.board.id === boardId);
     const view = useBoardViewStore(state => state.boardView);
 
     const { openModal, closeModal } = useGlobalModal();
+
+    function deleteTasksFromColumnFn(colId: string) {
+        if (boardId) deleteTasksFromColumn(boardId, colId)
+    }
 
     const columnsSelectData: BoardColumnSelectType[] = useMemo(() => {
         if (!board) return []
@@ -152,7 +157,7 @@ export default function BoardContent() {
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="font-bold uppercase text-primary text-[13px]">{col.name}</h3>
                                     <div className="flex gap-2 text-primary">
-                                        <AddNewTaskButton noText onClick={() => openTaskDialog(col.id)} />
+                                        {boardId && <ColumnDropdown onClick={() => openTaskDialog(col.id)} boardId={boardId} deleteTasks={() => deleteTasksFromColumnFn(col.id)} />}
                                     </div>
                                 </div>
 
