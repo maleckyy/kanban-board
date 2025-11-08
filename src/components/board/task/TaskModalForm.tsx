@@ -102,7 +102,7 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn, boardC
                     name='title'
                     control={control}
                     render={({ field }) => (
-                        <BorderlessInput defaultValue={field.value} onChange={field.onChange} className='flex-1 text-[18px]' ref={titleInputRef} />
+                        <BorderlessInput defaultValue={field.value} onChange={field.onChange} className='flex-1 text-[18px] p-1' ref={titleInputRef} />
                     )}
                 />
                 <Dropdown.Root>
