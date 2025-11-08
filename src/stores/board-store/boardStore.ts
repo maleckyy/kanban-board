@@ -14,6 +14,7 @@ export type BoardState = {
 
     addNewColumn: (boardId: string, colTitle: string) => void
     updateColumns: (boardId: string, cols: BoardColumn[]) => void
+    deleteTasksFromColumn: (boardId: string, colId: string) => void
 
     deleteColumn: (boardId: string, colId: string) => void
 
@@ -106,6 +107,26 @@ export const useBoardStore = create<BoardState>()(
                 }))
             },
 
+            deleteTasksFromColumn: (boardId: string, colId: string) => {
+                set(state => ({
+                    boards: state.boards.map(board => {
+                        if (board.board.id !== boardId) return board
+
+                        return {
+                            ...board,
+                            columns: board.columns.map(col => {
+                                if (col.id !== colId) return col
+
+                                return {
+                                    ...col,
+                                    tasks: [],
+                                }
+                            }),
+                        }
+                    }),
+                }))
+            },
+
             deleteColumn: (boardId: string, colId: string) => {
                 set(state => ({
                     boards: state.boards.map((boardOutput: BoardOutput) => {
@@ -162,21 +183,29 @@ export const useBoardStore = create<BoardState>()(
             updateTask: (boardId: string, colId: string, updatedTask: Task) => {
                 set(state => ({
                     boards: state.boards.map(board => {
-                        if (board.board.id !== boardId) return board
+                        if (board.board.id !== boardId) return board;
 
                         return {
                             ...board,
                             columns: board.columns.map(col => {
-                                if (col.id !== colId) return col
-
-                                return {
-                                    ...col,
-                                    tasks: col.tasks.map(task =>
-                                        task.id === updatedTask.id ? { ...task, ...updatedTask } : task
-                                    ),
+                                if (col.tasks.some(t => t.id === updatedTask.id) && col.id !== colId) {
+                                    return {
+                                        ...col,
+                                        tasks: col.tasks.filter(t => t.id !== updatedTask.id),
+                                    };
                                 }
+                                if (col.id === colId) {
+                                    return {
+                                        ...col,
+                                        tasks: [
+                                            ...col.tasks.filter(t => t.id !== updatedTask.id),
+                                            updatedTask
+                                        ]
+                                    };
+                                }
+                                return col;
                             }),
-                        }
+                        };
                     }),
                 }))
             },

@@ -22,6 +22,7 @@ export type Task = {
     title: string
     description: string
     createdAt: string
+    dueDate: string | null | undefined
     columnId: string
     position: number
     priority: TaskPriority
@@ -36,3 +37,8 @@ export enum TaskPriority {
 
 
 export type BoardsData = BoardOutput[]
+
+export type BoardColumnSelectType = {
+    id: string
+    name: string
+}

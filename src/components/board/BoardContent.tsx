@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
     DragDropContext,
     Droppable,
@@ -8,7 +8,7 @@ import {
 
 import { useLocation } from "react-router";
 import useBoardStore from "@/stores/board-store/boardStore";
-import { Task } from "@/types/board/board.type";
+import { BoardColumnSelectType, Task } from "@/types/board/board.type";
 import { cx } from "@/utils/cx";
 import { reorderList } from "./utils/reorderList";
 import SingleTaskBox from "./single-task-item/SingleTaskBox";
@@ -18,6 +18,7 @@ import AddNewStatusButton from "./board-components/AddNewStatusButton";
 import { useGlobalModal } from "../application/modals/AppModal";
 import TaskModalForm from "./task/TaskModalForm";
 import { setSearchParam } from "./utils/setSearchParam";
+import ColumnDropdown from "./column-dropdown/ColumnDropdown";
 
 export default function BoardContent() {
     const location = useLocation();
@@ -26,12 +27,26 @@ export default function BoardContent() {
     const taskIdInParams = useMemo(() => params.get("task"), [params]);
     const boardId = useMemo(() => location.pathname.split("/").pop(), [location]);
 
-    const { boards, updateTask, deleteTask, addNewTask: createNewTask, updateColumns: updateColumn } = useBoardStore(state => state)
+    const { boards, updateTask, deleteTask, addNewTask: createNewTask, updateColumns: updateColumn, deleteTasksFromColumn } = useBoardStore(state => state)
 
     const board = boards.find(b => b.board.id === boardId);
     const view = useBoardViewStore(state => state.boardView);
 
     const { openModal, closeModal } = useGlobalModal();
+
+    function deleteTasksFromColumnFn(colId: string) {
+        if (boardId) deleteTasksFromColumn(boardId, colId)
+    }
+
+    const columnsSelectData: BoardColumnSelectType[] = useMemo(() => {
+        if (!board) return []
+        return board?.columns.map(col => {
+            return {
+                id: col.id,
+                name: col.name
+            }
+        })
+    }, [board?.columns])
 
     function deleteTaskFn(colId: string, taskId: string) {
         if (!boardId) return;
@@ -39,14 +54,14 @@ export default function BoardContent() {
         closeModal();
     }
 
-    function updateTaskData(colId: string, task: Task) {
-        if (boardId) updateTask(boardId, colId, task)
-    }
+    const updateTaskData = useCallback((colId: string, task: Task) => {
+        if (boardId) updateTask(boardId, colId, task);
+    }, [boardId]);
 
-    function openTaskDialog(colId: string, task?: Task) {
+    function openTaskDialog(columnId: string, task?: Task) {
         if (!board || !boardId) return;
 
-        const newTask: Task | null = task ?? createNewTask(boardId, colId);
+        const newTask: Task | null = task ?? createNewTask(boardId, columnId);
         const id = task?.id ?? newTask?.id;
 
         if (id) setSearchParam("task", String(id));
@@ -54,7 +69,7 @@ export default function BoardContent() {
         const taskForModal = task ?? newTask;
         if (taskForModal) {
             openModal({
-                content: <TaskModalForm task={taskForModal} deleteTaskFn={() => deleteTaskFn(colId, taskForModal.id)} updateTaskFn={(task: Task) => updateTaskData(colId, task)} />,
+                content: <TaskModalForm task={taskForModal} deleteTaskFn={() => deleteTaskFn(columnId, taskForModal.id)} updateTaskFn={(colId: string, task: Task) => updateTaskData(colId, task)} boardColumnsData={columnsSelectData} />,
                 modalWidth: 800,
                 dataTestId: "board-task-modal",
                 hideCloseButton: true
@@ -109,7 +124,7 @@ export default function BoardContent() {
             const existingTask = col.tasks.find(task => task.id === taskIdInParams);
             if (existingTask) {
                 openModal({
-                    content: <TaskModalForm task={existingTask} deleteTaskFn={() => deleteTaskFn(col.id, existingTask.id)} updateTaskFn={(task: Task) => updateTaskData(col.id, task)} />,
+                    content: <TaskModalForm task={existingTask} deleteTaskFn={() => deleteTaskFn(col.id, existingTask.id)} updateTaskFn={(colId: string, task: Task) => updateTaskData(colId, task)} boardColumnsData={columnsSelectData} />,
                     modalWidth: 800,
                     dataTestId: "board-task-modal",
                     hideCloseButton: true
@@ -123,7 +138,7 @@ export default function BoardContent() {
     return (
         <div
             className={cx(
-                "flex flex-row justify-start items-start gap-4 flex-nowrap overflow-x-auto w-full",
+                "flex flex-row justify-start items-start gap-4 flex-nowrap overflow-x-auto w-full flex-1",
                 view === "list" ? "flex-col" : "flex-row"
             )}
         >
@@ -142,27 +157,29 @@ export default function BoardContent() {
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="font-bold uppercase text-primary text-[13px]">{col.name}</h3>
                                     <div className="flex gap-2 text-primary">
-                                        <AddNewTaskButton noText onClick={() => openTaskDialog(col.id)} />
+                                        {boardId && <ColumnDropdown onClick={() => openTaskDialog(col.id)} boardId={boardId} deleteTasks={() => deleteTasksFromColumnFn(col.id)} />}
                                     </div>
                                 </div>
 
-                                {col.tasks.map((item, index) => (
-                                    <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
-                                        {provided => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                className="p-2 mb-2 bg-secondary rounded shadow cursor-pointer"
-                                            >
-                                                <SingleTaskBox
-                                                    task={item}
-                                                    openDialog={() => openTaskDialog(col.id, item)}
-                                                />
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                ))}
+                                <div className=" max-h-[calc(100vh-190px)] overflow-auto">
+                                    {col.tasks.map((item, index) => (
+                                        <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                                            {provided => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    className="p-2 mb-2 bg-secondary rounded shadow cursor-pointer"
+                                                >
+                                                    <SingleTaskBox
+                                                        task={item}
+                                                        openDialog={() => openTaskDialog(col.id, item)}
+                                                    />
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                </div>
 
                                 {provided.placeholder}
                                 <AddNewTaskButton onClick={() => openTaskDialog(col.id)} />

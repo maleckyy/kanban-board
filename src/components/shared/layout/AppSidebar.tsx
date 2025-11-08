@@ -4,7 +4,6 @@ import {
     Rows01,
     Settings01,
     Database01,
-    Plus
 } from "@untitledui/icons";
 import type { NavItemType } from "@/components/application/app-navigation/config";
 import { SidebarNavigationSimple } from "@/components/application/app-navigation/sidebar-navigation/sidebar-simple";
@@ -82,6 +81,7 @@ export const AppSidebar = () => {
 
     return (
         <SidebarNavigationSimple
+            className="z-10"
             items={navItemsSimple}
             showAccountCard={false}
             activeUrl={`${location.pathname}`}
