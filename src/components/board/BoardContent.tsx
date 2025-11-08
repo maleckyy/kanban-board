@@ -123,7 +123,7 @@ export default function BoardContent() {
     return (
         <div
             className={cx(
-                "flex flex-row justify-start items-start gap-4 flex-nowrap overflow-x-auto w-full",
+                "flex flex-row justify-start items-start gap-4 flex-nowrap overflow-x-auto w-full flex-1",
                 view === "list" ? "flex-col" : "flex-row"
             )}
         >
@@ -146,23 +146,25 @@ export default function BoardContent() {
                                     </div>
                                 </div>
 
-                                {col.tasks.map((item, index) => (
-                                    <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
-                                        {provided => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                className="p-2 mb-2 bg-secondary rounded shadow cursor-pointer"
-                                            >
-                                                <SingleTaskBox
-                                                    task={item}
-                                                    openDialog={() => openTaskDialog(col.id, item)}
-                                                />
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                ))}
+                                <div className=" max-h-[calc(100vh-190px)] overflow-auto">
+                                    {col.tasks.map((item, index) => (
+                                        <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                                            {provided => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    className="p-2 mb-2 bg-secondary rounded shadow cursor-pointer"
+                                                >
+                                                    <SingleTaskBox
+                                                        task={item}
+                                                        openDialog={() => openTaskDialog(col.id, item)}
+                                                    />
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                </div>
 
                                 {provided.placeholder}
                                 <AddNewTaskButton onClick={() => openTaskDialog(col.id)} />

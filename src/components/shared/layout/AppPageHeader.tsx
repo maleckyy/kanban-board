@@ -8,7 +8,7 @@ type PropsType = {
 
 export default function AppPageHeader({ headerTitle, actionComponent }: PropsType) {
     return (
-        <section className='flex items-center gap-3 -z-1'>
+        <section className='flex items-center gap-3'>
             <PageTitle>{headerTitle}</PageTitle>
             {actionComponent}
         </section>
