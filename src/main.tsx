@@ -12,6 +12,7 @@ import BoardPage from "./pages/BoardPage";
 import TaskPage from "./pages/TaskPage";
 import BoardContent from "./components/board/BoardContent";
 import AddNewBoardPage from "./components/board/add-new-board/AddNewBoardPage";
+import DataPage from "./pages/DataPage";
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
@@ -29,6 +30,7 @@ createRoot(document.getElementById("root")!).render(
                             </Route>
 
                             <Route path="task" element={<TaskPage />} />
+                            <Route path="data" element={<DataPage />} />
                         </Route>
 
                         <Route path="*" element={<NotFound />} />

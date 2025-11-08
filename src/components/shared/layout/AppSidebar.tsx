@@ -68,7 +68,7 @@ export const AppSidebar = () => {
         return [
             {
                 label: "Data",
-                href: "/app/#",
+                href: "/app/data",
                 icon: Database01,
             },
             {
