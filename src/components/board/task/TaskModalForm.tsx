@@ -1,7 +1,7 @@
 import BorderlessInput from '@/styled-components/inputs/BorderlessInput'
 import { BoardColumnSelectType, Task } from '@/types/board/board.type'
 import React, { useEffect, useRef } from 'react'
-import { DotsHorizontal, Copy01, Flag01, CalendarPlus01, Trash01, CalendarCheck02 } from '@untitledui/icons'
+import { DotsHorizontal, Copy01, Flag01, CalendarPlus01, Trash01, CalendarCheck02, Asterisk01 } from '@untitledui/icons'
 import { TextArea } from 'react-aria-components'
 import { BadgeWithIcon } from '@/components/base/badges/badges'
 import { getTaskPriorityColor } from '../utils/getTaskPriorityColor'
@@ -123,14 +123,19 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn, boardC
                         Task ID: {task.id}
                     </span>
                 </BadgeWithIcon>
-                <div className='grid gap-1 grid-cols-2 grid-rows-2 items-start auto-rows-fr'>
+
+
+                <div className='grid gap-1 md:grid-rows-2  md:grid-cols-2 items-start auto-rows-fr grid-cols-1 grid-rows-1'>
                     <div className='flex items-center gap-2 text-[14px] h-full'>
-                        <CalendarPlus01 size={15} className='mb-0.5' /> Created at: {new Date(task.createdAt).toLocaleDateString()}
+                        <div className='flex items-center gap-2 w-25'>
+                            <CalendarPlus01 size={15} className='mb-0.5' /> Created at: </div>{new Date(task.createdAt).toLocaleDateString()}
                     </div>
 
                     <div className='flex items-center gap-2 text-[14px] h-full'>
-                        <Flag01 size={15} fill={getTaskPriorityColor(Number(priorityValue))} className='mb-0.5' />
-                        Priority:
+                        <div className='flex items-center gap-2 w-25'>
+                            <Flag01 size={15} fill={getTaskPriorityColor(Number(priorityValue))} className='mb-0.5' />
+                            Priority:
+                        </div>
                         <Controller
                             name='priority'
                             control={control}
@@ -143,9 +148,11 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn, boardC
                             )}
                         />
                     </div>
-                    <div className='flex items-center gap-2 text-[14px]  h-full'>
-                        <CalendarCheck02 size={14} className='mb-0.5' />
-                        Due date:
+                    <div className='flex items-center gap-2 text-[14px] h-full'>
+                        <div className='flex items-center gap-2 w-25'>
+                            <CalendarCheck02 size={14} className='mb-0.5' />
+                            Due date:
+                        </div>
                         <Controller
                             name="endDate"
                             control={control}
@@ -172,8 +179,11 @@ export default function TaskModalForm({ task, deleteTaskFn, updateTaskFn, boardC
                             }}
                         />
                     </div>
-                    <div>
-
+                    <div className='flex items-center gap-2 text-[14px] h-full'>
+                        <div className='flex items-center gap-2 w-25'>
+                            <Asterisk01 size={15} className='mb-0.5' />
+                            Status:
+                        </div>
                         <Controller
                             name='columnId'
                             control={control}
