@@ -19,6 +19,7 @@ import { useGlobalModal } from "../application/modals/AppModal";
 import TaskModalForm from "./task/TaskModalForm";
 import { setSearchParam } from "./utils/setSearchParam";
 import ColumnDropdown from "./column-dropdown/ColumnDropdown";
+import ColumnListViewHeading from "./board-components/ColumnListViewHeading";
 
 export default function BoardContent() {
     const location = useLocation();
@@ -154,7 +155,7 @@ export default function BoardContent() {
                                     view === "list" ? "w-full" : "w-[264px] min-h-60"
                                 )}
                             >
-                                <div className="flex justify-between items-center mb-4">
+                                <div className={cx("flex justify-between items-center", view === "list" ? "mb-0" : "mb-2")}>
                                     <h3 className="font-bold uppercase text-primary text-[13px]">{col.name}</h3>
                                     <div className="flex gap-2 text-primary">
                                         {boardId && <ColumnDropdown onClick={() => openTaskDialog(col.id)} boardId={boardId} deleteTasks={() => deleteTasksFromColumnFn(col.id)} />}
@@ -162,6 +163,7 @@ export default function BoardContent() {
                                 </div>
 
                                 <div className=" max-h-[calc(100vh-190px)] overflow-auto">
+                                    {view === "list" && col.tasks.length > 0 && <ColumnListViewHeading />}
                                     {col.tasks.map((item, index) => (
                                         <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                                             {provided => (
@@ -174,6 +176,7 @@ export default function BoardContent() {
                                                     <SingleTaskBox
                                                         task={item}
                                                         openDialog={() => openTaskDialog(col.id, item)}
+                                                        view={view}
                                                     />
                                                 </div>
                                             )}
