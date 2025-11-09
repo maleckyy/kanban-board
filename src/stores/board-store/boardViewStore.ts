@@ -2,7 +2,7 @@ import { localStorageKeys } from '@/consts/localStorageKeys'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-type BoardViewType = "board" | "list"
+export type BoardViewType = "board" | "list"
 
 type BoardViewStoreType = {
     boardView: BoardViewType,
