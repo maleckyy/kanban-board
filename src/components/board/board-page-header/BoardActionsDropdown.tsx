@@ -21,6 +21,7 @@ export default function BoardActionsDropdown({ boardId }: { boardId: string }) {
         openModal(
             {
                 title: "Change columns position",
+                description: "Deleting a column will delete the tasks associated with it.",
                 content: <ChangeColumPositions boardId={boardId} closeDialog={closeModal} />,
                 modalWidth: 600,
                 dataTestId: "change-columns-position-modal"
