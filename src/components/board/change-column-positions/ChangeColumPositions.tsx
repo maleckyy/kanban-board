@@ -5,6 +5,7 @@ import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea
 import { DotsGrid } from '@untitledui/icons';
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom';
+import ColumnDelete from './ColumnDelete';
 
 type PropsType = {
     boardId: string
@@ -14,10 +15,10 @@ type PropsType = {
 export default function ChangeColumPositions({ boardId, closeDialog }: PropsType) {
     const [items, setItems] = useState<BoardColumn[]>([]);
     const board = useBoardStore((state) => state.boards.find(b => b.board.id === boardId))
-    const updateBoardColumns = useBoardStore(state => state.updateColumns)
+    const { updateColumns: updateBoardColumns, deleteColumn } = useBoardStore()
 
     const [_, setDraggedEl] = useState<React.ReactNode | null>(null);
-    const [isChanged, setIsChanged] = useState<boolean>(false)
+    const [__, setIsChanged] = useState<boolean>(false)
 
     const onDragEnd = (result: DropResult) => {
         setDraggedEl(null);
@@ -37,6 +38,10 @@ export default function ChangeColumPositions({ boardId, closeDialog }: PropsType
         }));
         updateBoardColumns(boardId, newColsPositions)
         closeDialog()
+    }
+
+    function deleteColumnById(colId: string) {
+        deleteColumn(boardId, colId)
     }
 
     useEffect(() => {
@@ -89,6 +94,7 @@ export default function ChangeColumPositions({ boardId, closeDialog }: PropsType
                                             >
                                                 <DotsGrid size={16} />
                                                 <span className="small-text-title font-semibold">{index + 1}. {item.name}</span>
+                                                <ColumnDelete deleteColumn={() => deleteColumnById(item.id)} />
                                             </div>
                                         );
 
