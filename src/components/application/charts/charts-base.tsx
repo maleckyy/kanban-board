@@ -1,5 +1,5 @@
 import type { TooltipProps } from "recharts";
-import type { Props as LegendContentProps } from "recharts/types/component/DefaultLegendContent";
+import type { Props as LegendContentProps, LegendPayload } from "recharts/types/component/DefaultLegendContent";
 import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 import type { Props as DotProps } from "recharts/types/shape/Dot";
 import { cx } from "@/utils/cx";
@@ -44,8 +44,12 @@ export const selectEvenlySpacedItems = <T extends readonly unknown[]>(dataArray:
  * @returns The legend content.
  */
 export const ChartLegendContent = ({ reversed, payload, align, layout, className }: LegendContentProps & { reversed?: boolean; className?: string }) => {
-    payload = reversed ? payload?.toReversed() : payload;
+    // payload = reversed ? [...payload].reverse() : payload;
 
+
+    const items: LegendPayload[] = payload ? Array.from(payload) : [];
+
+    const displayed = reversed ? [...items].reverse() : items;
     return (
         <ul
             className={cx(
@@ -56,7 +60,8 @@ export const ChartLegendContent = ({ reversed, payload, align, layout, className
                 className,
             )}
         >
-            {payload?.map((entry, index) => (
+            {/* {payload?.map((entry, index) => ( */}
+            {displayed?.map((entry, index) => (
                 <li className="flex items-center gap-2 text-sm text-tertiary" key={index}>
                     <span className={cx("h-2 w-2 rounded-full bg-current", (entry.payload as { className?: string })?.className)} />
                     {entry.value}
@@ -93,8 +98,8 @@ export const ChartTooltipContent = ({ active, payload, label, isRadialChart, isP
         isSingleDataPoint && formatter
             ? formatter(title, payload?.[0].name || label, payload[0], 0, payload)
             : labelFormatter
-              ? labelFormatter(title, payload)
-              : title;
+                ? labelFormatter(title, payload)
+                : title;
     secondaryTitle = isSingleDataPoint && labelFormatter ? labelFormatter(secondaryTitle, payload) : secondaryTitle;
 
     return (
