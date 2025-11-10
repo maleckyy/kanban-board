@@ -83,6 +83,7 @@ export const useBoardStore = create<BoardState>()(
                                     name: colTitle,
                                     position: boardOutput.columns.length,
                                     boardId: boardId,
+                                    isCollapsed: false,
                                     tasks: []
                                 }
                                 ],

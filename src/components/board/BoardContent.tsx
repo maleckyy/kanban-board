@@ -20,6 +20,7 @@ import TaskModalForm from "./task/TaskModalForm";
 import { setSearchParam } from "./utils/setSearchParam";
 import ColumnDropdown from "./column-dropdown/ColumnDropdown";
 import ColumnListViewHeading from "./board-components/ColumnListViewHeading";
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "@untitledui/icons";
 
 export default function BoardContent() {
     const location = useLocation();
@@ -37,6 +38,15 @@ export default function BoardContent() {
 
     function deleteTasksFromColumnFn(colId: string) {
         if (boardId) deleteTasksFromColumn(boardId, colId)
+    }
+
+    function collapseColumn(colId: string, value: boolean) {
+        if (!board) return
+        const newCols = board.columns.map(col => {
+            if (col.id === colId) return { ...col, isCollapsed: value }
+            return col
+        })
+        if (boardId) updateColumn(boardId, newCols)
     }
 
     const columnsSelectData: BoardColumnSelectType[] = useMemo(() => {
@@ -151,27 +161,40 @@ export default function BoardContent() {
                                 ref={provided.innerRef}
                                 {...provided.droppableProps}
                                 className={cx(
-                                    "shrink-0 p-4 bg-primary rounded-xl border-secondary border",
-                                    view === "list" ? "w-full" : "w-[264px] min-h-60"
+                                    "shrink-0 p-3 bg-primary rounded-xl border-secondary border",
+                                    view === "list" ? "w-full" : cx("min-h-60", !col.isCollapsed && "w-[264px]")
                                 )}
                             >
-                                <div className={cx("flex justify-between items-center", view === "list" ? "mb-0" : "mb-2")}>
-                                    <h3 className="font-bold uppercase text-primary text-[13px]">{col.name}</h3>
+                                <div className={cx("flex justify-between items-center", view === "list" ? "mb-0" : cx("mb-0", col.isCollapsed && "flex-col-reverse gap-2"))}>
+                                    <h3 className={cx("font-bold uppercase text-primary text-[13px]", col.isCollapsed && view === "board" && "vertical-text")}>{col.name}</h3>
+
                                     <div className="flex gap-2 text-primary">
-                                        {boardId && <ColumnDropdown onClick={() => openTaskDialog(col.id)} boardId={boardId} deleteTasks={() => deleteTasksFromColumnFn(col.id)} />}
+                                        {boardId && !col.isCollapsed && <ColumnDropdown onClick={() => openTaskDialog(col.id)} boardId={boardId} deleteTasks={() => deleteTasksFromColumnFn(col.id)} />}
+                                        {col.isCollapsed ?
+                                            <button onClick={() => collapseColumn(col.id, false)} className="cursor-pointer h-[26px]">
+                                                {view === "board" ? <ChevronRight size={18} /> : <ChevronDown size={18} />}
+                                            </button>
+                                            :
+                                            <button onClick={() => collapseColumn(col.id, true)} className="cursor-pointer h-[26px]">
+                                                {view === "board" ? <ChevronLeft size={18} /> : <ChevronUp size={18} />}
+                                            </button>
+                                        }
                                     </div>
                                 </div>
 
-                                <div className=" max-h-[calc(100vh-190px)] overflow-auto">
-                                    {view === "list" && col.tasks.length > 0 && <ColumnListViewHeading />}
-                                    {col.tasks.map((item, index) => (
+                                <div className={cx(
+                                    "max-h-[calc(100vh-190px)] overflow-auto flex flex-col gap-2",
+                                    col.tasks.length > 0 && !col.isCollapsed && "mt-2"
+                                )}>
+                                    {view === "list" && col.tasks.length > 0 && !col.isCollapsed && <ColumnListViewHeading />}
+                                    {!col.isCollapsed && col.tasks.map((item, index) => (
                                         <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                                             {provided => (
                                                 <div
                                                     ref={provided.innerRef}
                                                     {...provided.draggableProps}
                                                     {...provided.dragHandleProps}
-                                                    className="p-2 mb-2 bg-secondary rounded shadow cursor-pointer"
+                                                    className="p-2 bg-secondary rounded shadow cursor-pointer"
                                                 >
                                                     <SingleTaskBox
                                                         task={item}
@@ -185,7 +208,7 @@ export default function BoardContent() {
                                 </div>
 
                                 {provided.placeholder}
-                                <AddNewTaskButton onClick={() => openTaskDialog(col.id)} />
+                                {!col.isCollapsed && <AddNewTaskButton onClick={() => openTaskDialog(col.id)} />}
                             </div>
                         )}
                     </Droppable>
