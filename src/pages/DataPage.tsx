@@ -9,6 +9,7 @@ export default function DataPage() {
     const importButtonRef = useRef<HTMLInputElement | null>(null)
     const MAX_BYTES = 5 * 1024 * 1024;
     const [usagePercent, setUsagePercent] = useState(0);
+    const [usageText, setUsageText] = useState("");
 
     // experimental - add merging existing data & current saved on localstorage
     function exportData() {
@@ -50,6 +51,10 @@ export default function DataPage() {
         reader.readAsText(file);
     }
 
+    function formatBytesToMB(bytes: number) {
+        return (bytes / (1024 * 1024)).toFixed(1) + "MB";
+    }
+
     function getLocalStorageSize() {
         let total = 0
         for (let key in localStorage) {
@@ -63,6 +68,8 @@ export default function DataPage() {
         const size = getLocalStorageSize();
         const percent = Math.min((size / MAX_BYTES) * 100, 100);
         setUsagePercent(percent);
+        const usageText = `${formatBytesToMB(size)} / ${formatBytesToMB(MAX_BYTES)}`;
+        setUsageText(usageText);
     };
 
     useEffect(() => {
@@ -73,7 +80,7 @@ export default function DataPage() {
         <>
             <AppPageHeader headerTitle='Import / Export your Data' />
             <div className='text-primary w-1/2 flex flex-col gap-2'>
-                <span>Current use of resources</span>
+                <span>Current use of resources: {usageText}</span>
                 <ProgressBar labelPosition="bottom" min={0} max={100} value={usagePercent} />
             </div>
             <div className='flex gap-4 items-center'>
