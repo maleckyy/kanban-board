@@ -1,17 +1,19 @@
 import React from 'react'
-import { Dotpoints02, DotsVertical, Trash01, Plus } from "@untitledui/icons";
+import { Dotpoints02, DotsVertical, Trash01, Plus, Edit01 } from "@untitledui/icons";
 import { Button } from "@/components/base/buttons/button";
 import { Dropdown } from "@/components/base/dropdown/dropdown";
 import { useGlobalModal } from '@/components/application/modals/AppModal';
 import ChangeColumPositions from '../change-column-positions/ChangeColumPositions';
+import EditColumnNameForm from '../edit-column-name/EditColumnNameForm';
 
 type PropsType = {
     onClick: () => void
     boardId: string
     deleteTasks: () => void
+    colId: string
 }
 
-export default function ColumnDropdown({ onClick: addNewTaskToCol, boardId, deleteTasks }: PropsType) {
+export default function ColumnDropdown({ onClick: addNewTaskToCol, boardId, deleteTasks, colId }: PropsType) {
     const { openModal, closeModal } = useGlobalModal()
 
     function openStatusModal() {
@@ -22,6 +24,17 @@ export default function ColumnDropdown({ onClick: addNewTaskToCol, boardId, dele
                 content: <ChangeColumPositions boardId={boardId} closeDialog={closeModal} />,
                 modalWidth: 600,
                 dataTestId: "change-columns-position-modal"
+            }
+        )
+    }
+
+    function openEditColumnNameModal() {
+        openModal(
+            {
+                title: "Change column name",
+                content: <EditColumnNameForm boardId={boardId} closeDialog={closeModal} colId={colId} />,
+                modalWidth: 600,
+                dataTestId: "change-column-name-modal"
             }
         )
     }
@@ -38,13 +51,19 @@ export default function ColumnDropdown({ onClick: addNewTaskToCol, boardId, dele
                         <Dropdown.Section>
                             <Dropdown.Item onClick={addNewTaskToCol}>
                                 <span className='text-[12px] flex items-center gap-2'>
-                                    < Plus size={14} />
+                                    <Plus size={14} />
                                     Add new task
+                                </span>
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={openEditColumnNameModal}>
+                                <span className='text-[12px] flex items-center gap-2'>
+                                    <Edit01 size={14} />
+                                    Edit column name
                                 </span>
                             </Dropdown.Item>
                             <Dropdown.Item onClick={openStatusModal} >
                                 <span className='text-[12px] flex items-center gap-2'>
-                                    < Dotpoints02 size={14} />
+                                    <Dotpoints02 size={14} />
                                     Edit Columns
                                 </span>
                             </Dropdown.Item>
