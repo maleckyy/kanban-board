@@ -169,7 +169,7 @@ export default function BoardContent() {
                                     <h3 className={cx("font-bold uppercase text-primary text-[13px]", col.isCollapsed && view === "board" && "vertical-text")}>{col.name}</h3>
 
                                     <div className="flex gap-2 text-primary">
-                                        {boardId && !col.isCollapsed && <ColumnDropdown onClick={() => openTaskDialog(col.id)} boardId={boardId} deleteTasks={() => deleteTasksFromColumnFn(col.id)} />}
+                                        {boardId && !col.isCollapsed && <ColumnDropdown onClick={() => openTaskDialog(col.id)} boardId={boardId} deleteTasks={() => deleteTasksFromColumnFn(col.id)} colId={col.id} />}
                                         {col.isCollapsed ?
                                             <button onClick={() => collapseColumn(col.id, false)} className="cursor-pointer h-[26px]">
                                                 {view === "board" ? <ChevronRight size={18} /> : <ChevronDown size={18} />}

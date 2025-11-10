@@ -13,6 +13,7 @@ export type BoardState = {
     deleteBoard: (boardId: string) => void
 
     addNewColumn: (boardId: string, colTitle: string) => void
+    updateColumnName: (boardId: string, colId: string, colTitle: string) => void
     updateColumns: (boardId: string, cols: BoardColumn[]) => void
     deleteTasksFromColumn: (boardId: string, colId: string) => void
 
@@ -91,6 +92,26 @@ export const useBoardStore = create<BoardState>()(
                         }
                         return boardOutput
                     })
+                }))
+            },
+
+            updateColumnName: (boardId: string, colId: string, colTitle: string) => {
+                set(state => ({
+                    boards: state.boards.map(board => {
+                        if (board.board.id !== boardId) return board
+
+                        return {
+                            ...board,
+                            columns: board.columns.map(col => {
+                                if (col.id !== colId) return col
+
+                                return {
+                                    ...col,
+                                    name: colTitle
+                                }
+                            }),
+                        }
+                    }),
                 }))
             },
 
