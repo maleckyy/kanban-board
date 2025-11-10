@@ -20,6 +20,7 @@ import TaskModalForm from "./task/TaskModalForm";
 import { setSearchParam } from "./utils/setSearchParam";
 import ColumnDropdown from "./column-dropdown/ColumnDropdown";
 import ColumnListViewHeading from "./board-components/ColumnListViewHeading";
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "@untitledui/icons";
 
 export default function BoardContent() {
     const location = useLocation();
@@ -37,6 +38,15 @@ export default function BoardContent() {
 
     function deleteTasksFromColumnFn(colId: string) {
         if (boardId) deleteTasksFromColumn(boardId, colId)
+    }
+
+    function collapseColumn(colId: string, value: boolean) {
+        if (!board) return
+        const newCols = board.columns.map(col => {
+            if (col.id === colId) return { ...col, isCollapsed: value }
+            return col
+        })
+        if (boardId) updateColumn(boardId, newCols)
     }
 
     const columnsSelectData: BoardColumnSelectType[] = useMemo(() => {
@@ -159,6 +169,15 @@ export default function BoardContent() {
                                     <h3 className="font-bold uppercase text-primary text-[13px]">{col.name}</h3>
                                     <div className="flex gap-2 text-primary">
                                         {boardId && <ColumnDropdown onClick={() => openTaskDialog(col.id)} boardId={boardId} deleteTasks={() => deleteTasksFromColumnFn(col.id)} />}
+                                        {col.isCollapsed ?
+                                            <button onClick={() => collapseColumn(col.id, false)} className="mb-0.5">
+                                                {view === "board" ? <ChevronRight size={18} /> : <ChevronDown size={18} />}
+                                            </button>
+                                            :
+                                            <button onClick={() => collapseColumn(col.id, true)} className="mb-0.5">
+                                                {view === "board" ? <ChevronLeft size={18} /> : <ChevronUp size={18} />}
+                                            </button>
+                                        }
                                     </div>
                                 </div>
 

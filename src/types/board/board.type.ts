@@ -14,6 +14,7 @@ export type BoardColumn = {
     boardId: string
     name: string
     position: number
+    isCollapsed: boolean
     tasks: Task[]
 }
 

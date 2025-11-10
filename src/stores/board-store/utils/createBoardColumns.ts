@@ -9,6 +9,7 @@ export function createBoardColumns(boardId: string, customColumnsNames: string[]
             name: name,
             boardId: boardId,
             position: idx,
+            isCollapsed: false,
             tasks: []
         }
         return col
