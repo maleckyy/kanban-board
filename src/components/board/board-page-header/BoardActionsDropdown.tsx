@@ -6,6 +6,7 @@ import useBoardStore from '@/stores/board-store/boardStore';
 import { useNavigate } from 'react-router';
 import { useGlobalModal } from '@/components/application/modals/AppModal';
 import ChangeColumPositions from '../change-column-positions/ChangeColumPositions';
+import ChangeBoardNameForm from '../change-board-name/ChangeBoardNameForm';
 
 export default function BoardActionsDropdown({ boardId }: { boardId: string }) {
     const { deleteBoard } = useBoardStore()
@@ -29,6 +30,17 @@ export default function BoardActionsDropdown({ boardId }: { boardId: string }) {
         )
     }
 
+    function openBoardNameModal() {
+        openModal(
+            {
+                title: "Change board name",
+                content: <ChangeBoardNameForm boardId={boardId} closeDialog={closeModal} />,
+                modalWidth: 600,
+                dataTestId: "change-board-name-modal"
+            }
+        )
+    }
+
     return (
         <Dropdown.Root>
             <Button color="secondary" size="sm" className='p-1 border-none'>
@@ -38,15 +50,15 @@ export default function BoardActionsDropdown({ boardId }: { boardId: string }) {
             <Dropdown.Popover>
                 <Dropdown.Menu>
                     <Dropdown.Section>
-                        <Dropdown.Item>
+                        <Dropdown.Item onClick={openBoardNameModal}>
                             <span className='text-[12px] flex items-center gap-2'>
-                                < Edit01 size={14} />
-                                Edit board
+                                <Edit01 size={14} />
+                                Edit board name
                             </span>
                         </Dropdown.Item>
                         <Dropdown.Item onClick={openStatusModal}>
                             <span className='text-[12px] flex items-center gap-2'>
-                                < Dotpoints02 size={14} />
+                                <Dotpoints02 size={14} />
                                 Edit Columns
                             </span>
                         </Dropdown.Item>
