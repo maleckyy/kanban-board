@@ -1,6 +1,4 @@
 import type { ReactNode } from "react";
-import { SearchLg } from "@untitledui/icons";
-import { Input } from "@/components/base/input/input";
 import { cx } from "@/utils/cx";
 import { MobileNavigationHeader } from "../base-components/mobile-header";
 import { NavAccountCard } from "../base-components/nav-account-card";
