@@ -2,7 +2,6 @@ import {
     BarChartSquare02,
     CheckDone01,
     Rows01,
-    Settings01,
     Database01,
 } from "@untitledui/icons";
 import type { NavItemType } from "@/components/application/app-navigation/config";
@@ -71,11 +70,11 @@ export const AppSidebar = () => {
                 href: "/app/data",
                 icon: Database01,
             },
-            {
-                label: "Settings",
-                href: "/app",
-                icon: Settings01,
-            },
+            // {
+            //     label: "Settings",
+            //     href: "/app",
+            //     icon: Settings01,
+            // },
         ]
     }, [])
 

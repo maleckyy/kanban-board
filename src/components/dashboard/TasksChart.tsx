@@ -52,21 +52,14 @@ export const TasksChart = () => {
                         className: "fill-utility-gray-100",
                     }}
                 />
-
-                {(title || subtitle) && (
-                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle">
-                        {subtitle && (
-                            <tspan x="50%" dy={title ? "-1.175em" : "1%"} className={cx("fill-current text-tertiary", "text-xs font-medium")}>
-                                {subtitle}
-                            </tspan>
-                        )}
-                        {title && (
-                            <tspan x="50%" dy={subtitle ? "1.25em" : "1%"} className={cx("fill-current text-primary", "text-xl font-semibold")}>
-                                {title}
-                            </tspan>
-                        )}
-                    </text>
-                )}
+                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle">
+                    <tspan x="50%" dy={"-1.175em"} className={cx("fill-current text-tertiary", "text-xs font-medium")}>
+                        {subtitle}
+                    </tspan>
+                    <tspan x="50%" dy={subtitle ? "1.25em" : "1%"} className={cx("fill-current text-primary", "text-xl font-semibold")}>
+                        {title}/{tasks.length}
+                    </tspan>
+                </text>
             </RadialBarChart>
         </ResponsiveContainer>
     );

@@ -72,6 +72,7 @@ export default function DataPage() {
     return (
         <>
             <AppPageHeader headerTitle='Import / Export your Data' />
+            <span className='text-red-400'>Experimental</span>
             <div className='text-primary w-1/2 flex flex-col gap-2'>
                 <span>Current use of resources</span>
                 <ProgressBar labelPosition="bottom" min={0} max={100} value={usagePercent} />
