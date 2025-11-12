@@ -1,7 +1,9 @@
 import { Button } from '@/components/base/buttons/button';
 import { ProgressBar } from '@/components/base/progress-indicators/progress-indicators';
+import { Toggle } from '@/components/base/toggle/toggle';
 import AppPageHeader from '@/components/shared/layout/AppPageHeader'
 import { localStorageKeys } from '@/consts/localStorageKeys';
+import { LSZustandBoardStorage } from '@/types/import-export-types/backup.type';
 import React, { useEffect, useRef, useState } from 'react'
 import { Input } from 'react-aria-components';
 
@@ -10,6 +12,8 @@ export default function DataPage() {
     const MAX_BYTES = 5 * 1024 * 1024;
     const [usagePercent, setUsagePercent] = useState(0);
     const [usageText, setUsageText] = useState("");
+    const [merge, setMerge] = useState(false)
+
 
     // experimental - add merging existing data & current saved on localstorage
     function exportData() {
@@ -23,7 +27,7 @@ export default function DataPage() {
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = "backup.json";
+        a.download = `backup_${new Date().toLocaleDateString()}.json`;
         a.click();
         URL.revokeObjectURL(url);
     }
@@ -34,15 +38,32 @@ export default function DataPage() {
 
         const reader = new FileReader();
 
+
+
         reader.onload = (e) => {
             try {
                 const json = JSON.parse(e.target?.result as string);
 
-                localStorage.setItem(localStorageKeys.boardStorage, JSON.stringify(json.boardStorage || {}));
-                localStorage.setItem(localStorageKeys.taskStorage, JSON.stringify(json.tasks || {}));
+
+                if (merge) {
+                    if (localStorage.getItem(localStorageKeys.boardStorage)) {
+                        const existingBoardDataAsString = localStorage.getItem(localStorageKeys.boardStorage)
+                        if (!existingBoardDataAsString) return
+                        const existingBoardData: LSZustandBoardStorage = JSON.parse(existingBoardDataAsString)
+                        const existingBoards = existingBoardData.state
+                        console.log(existingBoards)
+                    }
+
+
+                }
+                // if merge === false, existing data is replaced
+                else {
+                    localStorage.setItem(localStorageKeys.boardStorage, JSON.stringify(json.boardStorage || {}));
+                    localStorage.setItem(localStorageKeys.taskStorage, JSON.stringify(json.tasks || {}));
+                }
 
                 alert("Success");
-                window.location.reload();
+                // window.location.reload();
             } catch (err) {
                 alert("Error");
             }
@@ -83,10 +104,30 @@ export default function DataPage() {
                 <span>Current use of resources: {usageText}</span>
                 <ProgressBar labelPosition="bottom" min={0} max={100} value={usagePercent} />
             </div>
-            <div className='flex gap-4 items-center'>
-                <Button className='text-primary' onClick={exportData}>Export</Button>
-                <Button className='text-primary' onClick={() => importButtonRef.current?.click()}>Import</Button>
-                <Input ref={importButtonRef} type="file" accept="application/json" onChange={importData} className='text-primary hidden' placeholder='Import data' />
+            <div className='flex gap-4 items-center flex-col w-full'>
+
+                <section className='w-full flex flex-col gap-2'>
+                    <span className='text-primary text-md'>
+                        Import previously saved data. Choose between a clean save or supplementing the data currently saved in the application.
+                    </span>
+                    <Toggle label="Do you want to merge the data with the current data?" size="sm" isSelected={merge} onChange={setMerge} />
+                    <Button className='text-primary w-20' onClick={() => importButtonRef.current?.click()}>Import</Button>
+
+                    {/*  */}
+                </section>
+                <hr className='w-full text-secondary' />
+
+
+                <section className='w-full flex flex-col gap-2'>
+                    <span className='text-primary text-md'>
+                        Export data to a json file to save a copy of the data.
+                    </span>
+                    <Button className='text-primary w-20' onClick={exportData}>Export</Button>
+
+                    <Input ref={importButtonRef} type="file" accept="application/json" onChange={importData} className='text-primary hidden' placeholder='Import data' />
+                </section>
+
+
             </div>
 
         </>
