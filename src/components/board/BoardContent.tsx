@@ -22,6 +22,7 @@ import ColumnDropdown from "./column-dropdown/ColumnDropdown";
 import ColumnListViewHeading from "./board-components/ColumnListViewHeading";
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "@untitledui/icons";
 import { Badge } from "../base/badges/badges";
+import NavItemBadge from "../shared/layout/NavItemBadge";
 
 export default function BoardContent() {
     const location = useLocation();
@@ -163,13 +164,14 @@ export default function BoardContent() {
                                 {...provided.droppableProps}
                                 className={cx(
                                     "shrink-0 p-3 bg-primary rounded-xl border-secondary border",
-                                    view === "list" ? "w-full" : cx("min-h-60", !col.isCollapsed && "w-[264px]")
+                                    view === "list" ? "w-full" : cx("min-h-30", !col.isCollapsed && "w-[264px]")
                                 )}
                             >
                                 <div className={cx("flex justify-between items-center", view === "list" ? "mb-0" : cx("mb-0", col.isCollapsed && "flex-col-reverse gap-2"))}>
 
                                     <div className={cx("flex items-center gap-2", view === "list" ? "flex-row" : "flex-col-reverse")}>
-                                        {col.isCollapsed && <Badge><span>{col.tasks.length}</span></Badge>}
+                                        {col.isCollapsed && <NavItemBadge number={col.tasks.length} className="ml-0" />
+                                        }
                                         <h3 className={cx("font-bold uppercase text-primary text-[13px]", col.isCollapsed && view === "board" && "vertical-text")}>{col.name}</h3>
                                     </div>
 
