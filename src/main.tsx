@@ -38,5 +38,5 @@ createRoot(document.getElementById("root")!).render(
                 </RouteProvider>
             </BrowserRouter>
         </ThemeProvider>
-    </StrictMode>,
+    </StrictMode>
 );
