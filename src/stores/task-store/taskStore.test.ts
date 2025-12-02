@@ -1,4 +1,3 @@
-// src/stores/taskStore.test.ts
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useTaskStore } from './taskStore';
 import { TaskItem } from '@/types/task/task.type';

@@ -1,5 +1,5 @@
-import { localStorageKeys } from "@/consts/localStorageKeys";
-import { Board, BoardColumn, BoardOutput, BoardsData, Task } from "@/types/board/board.type";
+import { localStorageKeys } from "../../consts/localStorageKeys";
+import { Board, BoardColumn, BoardOutput, BoardsData, Task } from "../../types/board/board.type";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createTask } from "./utils/createNewTask";
