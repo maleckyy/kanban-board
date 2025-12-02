@@ -5,9 +5,9 @@ import Card from '@/styled-components/card/Card'
 export default function HomePage() {
     return (
         <>
-            <AppPageHeader headerTitle='Dashboard' />
+            <AppPageHeader headerTitle='Dashboard' datatestId='dashboard-header' />
             <section className='flex gap-4 flex-col md:flex-row'>
-                <Card>
+                <Card data-testid="completed-tasks-card">
                     <TasksChart />
                 </Card>
             </section>
