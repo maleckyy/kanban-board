@@ -1,5 +1,5 @@
-import { defaultColumnsNames } from "@/consts/board/defaultColumnsName"
-import { BoardColumn } from "@/types/board/board.type"
+import { defaultColumnsNames } from "../../../consts/board/defaultColumnsName"
+import { BoardColumn } from "../../../types/board/board.type"
 
 export function createBoardColumns(boardId: string, customColumnsNames: string[] = defaultColumnsNames): BoardColumn[] {
 

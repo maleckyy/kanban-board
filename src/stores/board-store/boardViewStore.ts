@@ -1,4 +1,4 @@
-import { localStorageKeys } from '@/consts/localStorageKeys'
+import { localStorageKeys } from '../../consts/localStorageKeys'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
