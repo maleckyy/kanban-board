@@ -23,6 +23,7 @@ interface SidebarNavigationProps {
     hideBorder?: boolean;
     /** Additional CSS classes to apply to the sidebar. */
     className?: string;
+    datatestId?: string
 }
 
 export const SidebarNavigationSimple = ({
@@ -33,6 +34,7 @@ export const SidebarNavigationSimple = ({
     showAccountCard = true,
     hideBorder = false,
     className,
+    datatestId
 }: SidebarNavigationProps) => {
     const MAIN_SIDEBAR_WIDTH = 296;
     const location = useLocation();
@@ -49,6 +51,7 @@ export const SidebarNavigationSimple = ({
                 !hideBorder && "border-secondary md:border-r",
                 className,
             )}
+            data-testid={datatestId}
         >
             <div className="flex flex-row gap-5 px-4 lg:px-5 justify-center">
                 <AppLogo />
@@ -79,10 +82,10 @@ export const SidebarNavigationSimple = ({
     return (
         <>
             {/* Mobile header navigation */}
-            <MobileNavigationHeader>{content}</MobileNavigationHeader>
+            <MobileNavigationHeader datatestId={datatestId}>{content}</MobileNavigationHeader>
 
             {/* Desktop sidebar navigation */}
-            <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex">{content}</div>
+            <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex" data-testid={datatestId}>{content}</div>
 
             {/* Placeholder to take up physical space because the real sidebar has `fixed` position. */}
             <div

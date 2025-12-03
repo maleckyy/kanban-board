@@ -6,7 +6,7 @@ describe('Loading page', () => {
   it('loading page should redirect to dashboard after 5s', () => {
     cy.visit('http://localhost:5173/')
     cy.wait(5000)
-    cy.url().should('include', '/app')
+    cy.shouldBeOnPage("/app")
   })
 })
 
