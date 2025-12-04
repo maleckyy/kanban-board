@@ -31,14 +31,15 @@ export const TaskTable = () => {
         openModal({
             title: "Edit task",
             modalWidth: 500,
-            dataTestId: "Edit-task-modal",
+            dataTestId: "edit-task-modal",
             content: <ModalTaskForm taskData={task} />
         })
     }, [openModal])
 
     return (
-        <TableCard.Root>
+        <TableCard.Root data-testid="task-table">
             <TableCard.Header
+                dataTestId="task-card-header"
                 title="All tasks"
                 badge={`${finishedTasks}/${tasks.length} tasks`}
                 contentTrailing={
@@ -60,7 +61,7 @@ export const TaskTable = () => {
                 </Table.Header>
                 <Table.Body items={tasks}>
                     {(item) => (
-                        <Table.Row id={item.id} className="odd:bg-secondary_subtle" key={item.id}>
+                        <Table.Row id={item.id} className="odd:bg-secondary_subtle" key={item.id} data-testid={item.title}>
                             <Table.Cell className="whitespace-nowrap">
                                 <div className="flex justify-center items-center">
                                     <Checkbox size="sm" isSelected={item.isDone} onChange={() => { toggleTaskStatus(item.id) }} />

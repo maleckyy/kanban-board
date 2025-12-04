@@ -9,9 +9,9 @@ type PropsType = {
 export default function TableActions({ deleteFn, editFn }: PropsType) {
     return (
         <Dropdown.Root>
-            <Dropdown.DotsButton />
+            <Dropdown.DotsButton data-testid='task-dropdown-trigger' />
             <Dropdown.Popover className="w-min">
-                <Dropdown.Menu>
+                <Dropdown.Menu data-testid='task-dropdown-menu'>
                     <Dropdown.Item icon={Edit01} onClick={editFn}>
                         <span className="pr-4">Edit</span>
                     </Dropdown.Item>
