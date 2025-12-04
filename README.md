@@ -34,7 +34,12 @@ A simple app to organize your daily tasks and manage your time better. It combin
 
 _Board_
 
-![board](/app-images/board.PNG)
+![board](/app-images/board.gif)
+
+
+_Board list view_
+
+![board list view](/app-images/board-list.PNG)
 
 
 _Tasks_
