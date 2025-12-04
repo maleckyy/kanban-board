@@ -5,7 +5,7 @@ import React from 'react'
 export default function TaskPage() {
     return (
         <>
-            <AppPageHeader headerTitle='Tasks' />
+            <AppPageHeader headerTitle='Tasks' datatestId='task-header' />
             <TaskTable />
         </>
     )

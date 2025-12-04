@@ -10,10 +10,10 @@ import {
 import { cx } from "@/utils/cx";
 import AppLogo from "@/components/shared/AppLogo";
 
-export const MobileNavigationHeader = ({ children }: PropsWithChildren) => {
+export const MobileNavigationHeader = ({ children, datatestId }: { children: PropsWithChildren, datatestId?: string }) => {
     return (
         <AriaDialogTrigger>
-            <header className="flex h-16 items-center justify-between border-b border-secondary bg-primary py-3 pr-2 pl-4 lg:hidden">
+            <header className="flex h-16 items-center justify-between border-b border-secondary bg-primary py-3 pr-2 pl-4 lg:hidden" data-testid={datatestId}>
                 <AppLogo />
 
                 <AriaButton

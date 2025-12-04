@@ -85,6 +85,7 @@ export const AppSidebar = () => {
             showAccountCard={false}
             activeUrl={`${location.pathname}`}
             footerItems={footerItems}
+            datatestId="app-navbar"
         />
     )
 };

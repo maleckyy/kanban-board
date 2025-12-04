@@ -94,7 +94,7 @@ export const GlobalModalProvider = ({ children }: { children: ReactNode }) => {
                         )
                     }>
                     <AriaDialog className="outline-hidden relative text-primary" aria-label={modalData.title || "Dialog window"}>
-                        {!modalData.hideCloseButton && <button className='absolute -top-3 -right-3 cursor-pointer' onClick={closeModal}><X size={18}></X></button>}
+                        {!modalData.hideCloseButton && <button className='absolute -top-3 -right-3 cursor-pointer' onClick={closeModal} data-testid="close-modal-button"><X size={18}></X></button>}
                         {modalData.title && !modalData.hideTitle && (
                             <h2 className="text-lg font-semibold mb-2">{modalData.title}</h2>
                         )}

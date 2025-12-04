@@ -10,8 +10,10 @@
       "DOM",
       "ES2023"
     ],
-    "target": "ES2023"
+    "target": "ES2023",
+    "types": ["cypress"]
   },
+  "include": ["cypress/**/*.ts"],
   "files": [],
   "references": [
     {
