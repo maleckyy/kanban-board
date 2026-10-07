@@ -21,7 +21,6 @@ import { setSearchParam } from "./utils/setSearchParam";
 import ColumnDropdown from "./column-dropdown/ColumnDropdown";
 import ColumnListViewHeading from "./board-components/ColumnListViewHeading";
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "@untitledui/icons";
-import { Badge } from "../base/badges/badges";
 import NavItemBadge from "../shared/layout/NavItemBadge";
 
 export default function BoardContent() {
@@ -170,9 +169,11 @@ export default function BoardContent() {
                                 <div className={cx("flex justify-between items-center", view === "list" ? "mb-0" : cx("mb-0", col.isCollapsed && "flex-col-reverse gap-2"))}>
 
                                     <div className={cx("flex items-center gap-2", view === "list" ? "flex-row" : "flex-col-reverse")}>
-                                        {col.isCollapsed && <NavItemBadge number={col.tasks.length} className="ml-0" />
-                                        }
-                                        <h3 className={cx("font-bold uppercase text-primary text-[13px]", col.isCollapsed && view === "board" && "vertical-text")}>{col.name}</h3>
+                                        <div className="flex flex-row gap-1">
+                                            {!col.isCollapsed && <NavItemBadge number={col.tasks.length} className="ml-0" />}
+                                            <h3 className={cx("font-bold uppercase text-primary text-[13px]", col.isCollapsed && view === "board" && "vertical-text")}>{col.name}</h3>
+                                        </div>
+                                        {col.isCollapsed && <NavItemBadge number={col.tasks.length} className="ml-0" />}
                                     </div>
 
                                     <div className="flex gap-2 text-primary">
